@@ -1,4 +1,5 @@
 ---
 create_user: pilosus
 copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/vrs_rsa.pub') }}"
-sys_packages: [ 'curl', 'vim', 'emacs', 'git', 'ufw']
+sys_packages: ['curl', 'vim', 'emacs', 'git', 'ufw']
+java_packages: ['openjdk-17-jdk']

@@ -1,6 +1,6 @@
-#################################################
-# DO Community Playbooks: Initial Server Setup
-#################################################
+#####################################################
+# Initial Server Setup: Ubuntu 20.01, Security, JVM #
+#####################################################
 ---
 - hosts: all
   become: true
@@ -8,8 +8,10 @@
     - vars/default.yml
 
   tasks:
-    - name: Install Prerequisites
+    - name: Install aptitude
       apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
+      tags:
+        - packages
 
 # Sudo Group Setup
     - name: Make sure we have a 'wheel' group
@@ -51,9 +53,19 @@
 # Install Packages
     - name: Update apt
       apt: update_cache=yes
+      tags:
+        - packages
 
     - name: Install required system packages
       apt: name={{ sys_packages }} state=latest
+      tags:
+        - packages
+
+    - name: Install Java related packages
+      apt: name={{ java_packages }} state=latest
+      tags:
+        - packages
+        - java
 
 # UFW Setup
     - name: UFW - Allow SSH connections
