@@ -6,6 +6,7 @@
   become: true
   vars_files:
     - vars/default.yml
+    - vars/service.yml
 
   tasks:
     - name: Install aptitude
@@ -72,6 +73,8 @@
       ufw:
         rule: allow
         name: OpenSSH
+      tags:
+        - security
 
     - name: UFW - Deny all other incoming traffic by default
       ufw:

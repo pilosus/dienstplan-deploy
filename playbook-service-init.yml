@@ -1,0 +1,66 @@
+#####################################################################
+# Initial App Service Setup: System group and user, Systemd service #
+#####################################################################
+---
+- hosts: all
+  become: true
+  vars:
+    local_path: /home/vitaly/git/dienstplan/target/uberjar/
+    app_file: dienstplan-0.1.0-SNAPSHOT-standalone.jar
+  vars_files:
+    - vars/default.yml
+    - vars/service.yml
+
+  tasks:
+# Set up user and dirs for the app
+    - name: Make sure we have a group for web services
+      group:
+        name: "{{ service_usergroup }}"
+        system: yes
+        state: present
+      tags:
+        - user
+
+    - name: Create a new regular user with sudo privileges
+      user:
+        name: "{{ service_username }}"
+        groups: "{{ service_usergroup }}"
+        state: present
+        system: yes
+        append: yes
+        create_home: false
+        shell: /sbin/nologin
+      tags:
+        - user
+
+    - name: Creates directory
+      file:
+        path: "{{ service_directory }}"
+        state: directory
+        owner: "{{ service_username }}"
+        group: "{{ service_usergroup }}"
+      tags:
+        - path
+
+# FIXME use envs!
+    - name: Creates systemd service
+      template:
+        src: files/dienstplan.j2
+        dest: "{{ systemd_service_file }}"
+        owner: root
+        group: root
+        mode: "{{ service_files_chmod }}"
+        backup: yes
+      tags:
+        - systemd
+
+    - name: Copy app files to remote server
+      copy:
+        src: "{{ local_path }}/{{ app_file }}"
+        dest: "{{ service_directory }}/{{ app_file }}"
+        owner: "{{ service_username }}"
+        group: "{{ service_usergroup }}"
+        mode: "{{ service_files_chmod }}"
+        backup: yes
+      tags:
+        - copy

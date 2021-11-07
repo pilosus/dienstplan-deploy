@@ -1,0 +1,6 @@
+---
+service_usergroup: web
+service_username: dienstplan
+service_directory: /opt/dienstplan
+service_files_chmod: '0644'
+systemd_service_file: /etc/systemd/system/dienstplan.service

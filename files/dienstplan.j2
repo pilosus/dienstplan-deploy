@@ -1,0 +1,15 @@
+[Unit]
+Description=Jetty server for dienstplan app
+After=network.target
+
+[Service]
+WorkingDirectory={{ service_directory }}
+ExecStart=/bin/java -jar {{ app_file }}
+User={{ service_username }}
+Group={{ service_usergroup }}
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
