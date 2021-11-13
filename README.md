@@ -23,3 +23,39 @@ Play scenario for server `sordes` only:
 ```
 ansible-playbook -l sordes playbook-server-init.yml -i hosts -u root
 ```
+
+### Encrypt / descrypt vault values
+
+See the [docs](https://docs.ansible.com/ansible/latest/user_guide/vault.html)
+
+```
+# encrypt
+ansible-vault encrypt_string --vault-password-file ~/.ansible/.sordes_pass.txt 'String to encrypt' --name 'variable_name'
+
+# decrypt specific variable
+ansible localhost -m ansible.builtin.debug -a var="slack_token" -e "@vars/service.yml" --vault-password-file ~/.ansible/.sordes_pass.txt
+```
+
+
+### Run service init playbook
+
+```
+# Run all tasks
+ansible-playbook -l sordes playbook-service-init.yml -i hosts -u root --vault-password-file ~/.ansible/.sordes_pass.txt
+
+# Run tasks with selected tags
+ansible-playbook -l sordes playbook-service-init.yml -i hosts -u root --vault-password-file ~/.ansible/.sordes_pass.txt --tags "env"
+```
+
+
+
+### Debugging service
+
+```
+# See service status
+systemct status dienstplan.service
+systemct is-active dienstplan.service
+
+# See logs
+journalctl -u dienstplan.service
+```

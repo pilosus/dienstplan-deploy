@@ -4,6 +4,7 @@ After=network.target
 
 [Service]
 WorkingDirectory={{ service_directory }}
+EnvironmentFile={{ systemd_service_env }}
 ExecStart=/bin/java -jar {{ app_file }}
 User={{ service_username }}
 Group={{ service_usergroup }}

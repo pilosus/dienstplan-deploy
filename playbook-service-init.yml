@@ -5,15 +5,18 @@
 - hosts: all
   become: true
   vars:
-    local_path: /home/vitaly/git/dienstplan/target/uberjar/
-    app_file: dienstplan-0.1.0-SNAPSHOT-standalone.jar
+    jar_local_directory: ../dienstplan/target/uberjar/
+    resources_local_directory: ../dienstplan/resources/
+    app_version: 0.1.0-SNAPSHOT
+    app_file: "dienstplan-{{ app_version }}-standalone.jar"
+    app_resources: resources
   vars_files:
     - vars/default.yml
     - vars/service.yml
+    - vars/env.yml
 
   tasks:
-# Set up user and dirs for the app
-    - name: Make sure we have a group for web services
+    - name: Get a user group for a service
       group:
         name: "{{ service_usergroup }}"
         system: yes
@@ -33,7 +36,7 @@
       tags:
         - user
 
-    - name: Creates directory
+    - name: Create a directory for the service
       file:
         path: "{{ service_directory }}"
         state: directory
@@ -42,10 +45,9 @@
       tags:
         - path
 
-# FIXME use envs!
-    - name: Creates systemd service
+    - name: Create the systemd service
       template:
-        src: files/dienstplan.j2
+        src: files/systemd_service.j2
         dest: "{{ systemd_service_file }}"
         owner: root
         group: root
@@ -54,13 +56,41 @@
       tags:
         - systemd
 
-    - name: Copy app files to remote server
+    - name: Create an env file for the systemd service
+      template:
+        src: files/systemd_env.j2
+        dest: "{{ systemd_service_env }}"
+        owner: root
+        group: root
+        mode: "{{ env_files_chmod }}"
+      tags:
+        - systemd
+        - env
+
+    - name: Copy the app file to remote server
       copy:
-        src: "{{ local_path }}/{{ app_file }}"
+        src: "{{ jar_local_directory }}/{{ app_file }}"
         dest: "{{ service_directory }}/{{ app_file }}"
         owner: "{{ service_username }}"
         group: "{{ service_usergroup }}"
         mode: "{{ service_files_chmod }}"
-        backup: yes
       tags:
         - copy
+
+    - name: Copy the app resources to remote server
+      copy:
+        src: "{{ resources_local_directory }}"
+        dest: "{{ service_directory }}/{{ app_resources }}"
+        owner: "{{ service_username }}"
+        group: "{{ service_usergroup }}"
+        mode: "{{ service_resources_chmod }}"
+      tags:
+        - copy
+
+    - name: Enable and start the systemd service
+      ansible.builtin.systemd:
+        name: "{{ systemd_service_name }}"
+        enabled: yes
+        state: started
+      tags:
+        - systemd
