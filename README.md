@@ -41,10 +41,10 @@ ansible localhost -m ansible.builtin.debug -a var="slack_token" -e "@vars/servic
 
 ```
 # Run all tasks
-ansible-playbook -l sordes playbook-service-init.yml -i hosts -u root --vault-password-file ~/.ansible/.sordes_pass.txt
+ansible-playbook --limit sordes playbook-app-init.yml --inventory hosts --user root --vault-password-file ~/.ansible/.sordes_pass.txt
 
 # Run tasks with selected tags
-ansible-playbook -l sordes playbook-service-init.yml -i hosts -u root --vault-password-file ~/.ansible/.sordes_pass.txt --tags "env"
+ansible-playbook -l sordes playbook-app-init.yml -i hosts -u root --vault-password-file ~/.ansible/.sordes_pass.txt --tags "env"
 ```
 
 

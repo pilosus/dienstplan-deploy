@@ -1,0 +1,21 @@
+---
+app_username: dienstplan
+app_usergroup: web
+app_directory: /opt/dienstplan
+
+app_files_chmod: "0644"
+app_resources_chmod: "0755"
+env_files_chmod: "0600"
+
+systemd_service_name: dienstplan.service
+systemd_service_file: /etc/systemd/system/{{ systemd_service_name }}
+systemd_service_env: /etc/opt/dienstplan.env
+
+local_path: "../dienstplan"
+app_local_directory: "{{ local_path }}/target/uberjar/"
+resources_local_directory: "{{ local_path }}/resources/"
+
+app_resources: resources
+# FIXME change version!
+app_version: 0.1.0-SNAPSHOT
+app_file: "dienstplan-{{ app_version }}-standalone.jar"
