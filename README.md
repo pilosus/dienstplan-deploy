@@ -33,7 +33,7 @@ See the [docs](https://docs.ansible.com/ansible/latest/user_guide/vault.html)
 ansible-vault encrypt_string --vault-password-file ~/.ansible/.sordes_pass.txt 'String to encrypt' --name 'variable_name'
 
 # decrypt specific variable
-ansible localhost -m ansible.builtin.debug -a var="slack_token" -e "@vars/service.yml" --vault-password-file ~/.ansible/.sordes_pass.txt
+ansible localhost -m ansible.builtin.debug -a var="env_slack_token" -e "@vars/env.yml" --vault-password-file ~/.ansible/.sordes_pass.txt
 ```
 
 
@@ -46,7 +46,6 @@ ansible-playbook --limit sordes playbook-app-init.yml --inventory hosts --user r
 # Run tasks with selected tags
 ansible-playbook -l sordes playbook-app-init.yml -i hosts -u root --vault-password-file ~/.ansible/.sordes_pass.txt --tags "env"
 ```
-
 
 
 ### Debugging service
