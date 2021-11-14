@@ -5,8 +5,8 @@
 - hosts: all
   become: true
   vars_files:
-    - vars/default.yml
-    - vars/service.yml
+    - vars/server.yml
+    - vars/app.yml
 
   tasks:
     - name: Install aptitude
@@ -14,7 +14,6 @@
       tags:
         - packages
 
-# Sudo Group Setup
     - name: Make sure we have a 'wheel' group
       group:
         name: wheel
@@ -28,7 +27,6 @@
         line: '%wheel ALL=(ALL) NOPASSWD: ALL'
         validate: '/usr/sbin/visudo -cf %s'
 
-# User + Key Setup
     - name: Create a new regular user with sudo privileges
       user:
         name: "{{ create_user }}"
@@ -51,7 +49,6 @@
         regexp: '^#?PermitRootLogin'
         line: 'PermitRootLogin prohibit-password'
 
-# Install Packages
     - name: Update apt
       apt: update_cache=yes
       tags:
@@ -68,11 +65,27 @@
         - packages
         - java
 
-# UFW Setup
+# Nginx
+
+    - name: Install Nginx
+      apt: name=nginx state=latest
+      tags:
+        - packages
+        - nginx
+
+# Firewall
+
     - name: UFW - Allow SSH connections
       ufw:
         rule: allow
         name: OpenSSH
+      tags:
+        - security
+
+    - name: UFW - Allow Nginx
+      ufw:
+        rule: allow
+        name: "Nginx Full"
       tags:
         - security
 
