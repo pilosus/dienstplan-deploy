@@ -73,8 +73,31 @@
         - packages
         - nginx
 
-# Firewall
+# Certbot
+    - name: Install certboot for Let's encrypt support
+      # # https://certbot.eff.org/instructions?ws=nginx&os=ubuntu-20
+      community.general.snap:
+        name: certbot
+        classic: yes
+      tags:
+        - packages
+        - nginx
+        - ssl
 
+    - name: Link certbot binary
+      raw: ln -fs /snap/bin/certbot /usr/bin/certbot
+      become: yes
+      tags:
+        - ssl
+
+    - name: Run certbot
+      # https://eff-certbot.readthedocs.io/en/stable/using.html#certbot-command-line-options
+      raw: certbot --non-interactive --nginx --agree-tos -m "{{ server_admin_email }}" -d "{{ server_domain_name }}"
+      become: yes
+      tags:
+        - ssl
+
+# Firewall
     - name: UFW - Allow SSH connections
       ufw:
         rule: allow

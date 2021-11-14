@@ -5,7 +5,7 @@
 Get info about `sordes` server from `hosts` file:
 
 ```
-ansible sordes -m setup -i hosts -u root
+ansible sordes --module-name setup --inventory ~/.ansible/hosts --user root
 ```
 
 ### Ping servers
@@ -13,7 +13,7 @@ ansible sordes -m setup -i hosts -u root
 Ping all servers of group `digital_ocean` from the `hosts` file:
 
 ```
-ansible digital_ocean -i hosts -m ping -u root
+ansible digital_ocean --inventory ~/.ansible/hosts --module-name ping --user root
 ```
 
 ### Run server init playbook
@@ -21,7 +21,7 @@ ansible digital_ocean -i hosts -m ping -u root
 Play scenario for server `sordes` only:
 
 ```
-ansible-playbook -l sordes playbook-server-init.yml -i hosts -u root
+ansible-playbook --limit sordes playbook-server-init.yml --inventory ~/.ansible/hosts --user root
 ```
 
 ### Encrypt / descrypt vault values
@@ -41,10 +41,10 @@ ansible localhost -m ansible.builtin.debug -a var="env_slack_token" -e "@vars/en
 
 ```
 # Run all tasks
-ansible-playbook --limit sordes playbook-app-init.yml --inventory hosts --user root --vault-password-file ~/.ansible/.sordes_pass.txt
+ansible-playbook --limit sordes playbook-app-init.yml --inventory ~/.ansible/hosts --user root --vault-password-file ~/.ansible/.sordes_pass.txt
 
 # Run tasks with selected tags
-ansible-playbook -l sordes playbook-app-init.yml -i hosts -u root --vault-password-file ~/.ansible/.sordes_pass.txt --tags "env"
+ansible-playbook -l sordes playbook-app-init.yml --inventory ~/.ansible/hosts -u root --vault-password-file ~/.ansible/.sordes_pass.txt --tags "env"
 ```
 
 
