@@ -88,3 +88,32 @@
         state: started
       tags:
         - systemd
+
+    - name: Create nginx config for the service
+      template:
+        src: files/nginx_service.j2
+        dest: "{{ nginx_config_file }}"
+        owner: root
+        group: root
+        mode: "{{ nginx_config_chmod }}"
+      tags:
+        - nginx
+
+    - name: Create a symlink to nginx config to enable it
+      file:
+        src: "{{ nginx_config_file }}"
+        dest: "{{ nginx_config_symlink }}"
+        owner: root
+        group: root
+        mode: "{{ nginx_config_chmod }}"
+        state: link
+      tags:
+        - nginx
+
+    - name: Restart nginx
+      ansible.builtin.systemd:
+        name: nginx
+        state: restarted
+      tags:
+        - nginx
+        - systemd

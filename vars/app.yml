@@ -11,6 +11,10 @@ systemd_service_name: dienstplan.service
 systemd_service_file: /etc/systemd/system/{{ systemd_service_name }}
 systemd_service_env: /etc/opt/dienstplan.env
 
+nginx_config_file: /etc/nginx/sites-available/default
+nginx_config_symlink: /etc/nginx/sites-enabled/default
+nginx_config_chmod: "0644"
+
 local_path: "../dienstplan"
 app_local_directory: "{{ local_path }}/target/uberjar/"
 resources_local_directory: "{{ local_path }}/resources/"

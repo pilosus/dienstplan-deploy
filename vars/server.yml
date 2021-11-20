@@ -4,6 +4,8 @@ copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/vrs_rsa.pub') }
 sys_packages: ['curl', 'vim', 'emacs', 'git', 'ufw']
 java_packages: ['openjdk-17-jdk']
 
+server_upstream_uri: 127.0.0.1:8080
+
 server_domain_name: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           33333961373362633135323363383161626164633733366639633034666666333536366131316335
