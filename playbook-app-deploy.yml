@@ -1,0 +1,58 @@
+#######################################################
+# Upload app version, restart systemd, nginx services #
+# NB: set app version in vars/app.yml                 #
+#######################################################
+---
+- hosts: all
+  become: true
+  vars_files:
+    - vars/server.yml
+    - vars/app.yml
+    - vars/env.yml
+
+  tasks:
+    - name: Create an env file for the systemd service
+      template:
+        src: files/systemd_env.j2
+        dest: "{{ systemd_service_env }}"
+        owner: root
+        group: root
+        mode: "{{ env_files_chmod }}"
+      tags:
+        - systemd
+        - env
+
+    - name: Copy the app file to remote server
+      copy:
+        src: "{{ app_local_directory }}/{{ app_file }}"
+        dest: "{{ app_directory }}/{{ app_file }}"
+        owner: "{{ app_username }}"
+        group: "{{ app_usergroup }}"
+        mode: "{{ app_files_chmod }}"
+      tags:
+        - copy
+
+    - name: Copy the app resources to remote server
+      copy:
+        src: "{{ resources_local_directory }}"
+        dest: "{{ app_directory }}/{{ app_resources }}"
+        owner: "{{ app_username }}"
+        group: "{{ app_usergroup }}"
+        mode: "{{ app_resources_chmod }}"
+      tags:
+        - copy
+
+    - name: Restart the systemd service
+      ansible.builtin.systemd:
+        name: "{{ systemd_service_name }}"
+        state: restarted
+      tags:
+        - systemd
+
+    - name: Restart nginx
+      ansible.builtin.systemd:
+        name: nginx
+        state: restarted
+      tags:
+        - nginx
+        - systemd
