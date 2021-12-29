@@ -1,0 +1,14 @@
+[Unit]
+Description=dienstplan app database rollback
+After=network.target
+
+[Service]
+Type=oneshot
+WorkingDirectory={{ app_directory }}
+EnvironmentFile={{ systemd_service_env }}
+ExecStart=/bin/java -jar {{ app_file }} --mode rollback
+User={{ app_username }}
+Group={{ app_usergroup }}
+
+[Install]
+WantedBy=multi-user.target

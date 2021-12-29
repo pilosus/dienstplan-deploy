@@ -1,11 +1,12 @@
 [Unit]
 Description=Jetty server for dienstplan app
-After=network.target
+After={{ systemd_migrate_name }}
+Requires={{ systemd_migrate_name }}
 
 [Service]
 WorkingDirectory={{ app_directory }}
 EnvironmentFile={{ systemd_service_env }}
-ExecStart=/bin/java -jar {{ app_file }}
+ExecStart=/bin/java -jar {{ app_file }} --mode server
 User={{ app_username }}
 Group={{ app_usergroup }}
 Type=simple

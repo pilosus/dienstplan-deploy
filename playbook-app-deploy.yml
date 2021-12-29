@@ -42,6 +42,13 @@
       tags:
         - copy
 
+    - name: Migrate DB
+      ansible.builtin.systemd:
+        name: "{{ systemd_migrate_name }}"
+        state: restarted
+      tags:
+        - systemd
+
     - name: Restart the systemd service
       ansible.builtin.systemd:
         name: "{{ systemd_service_name }}"
