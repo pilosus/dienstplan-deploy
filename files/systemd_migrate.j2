@@ -1,0 +1,14 @@
+[Unit]
+Description=dienstplan app database migration
+After=network.target
+
+[Service]
+Type=oneshot
+WorkingDirectory={{ app_directory }}
+EnvironmentFile={{ systemd_service_env }}
+ExecStart=/bin/java -jar {{ app_file }} --mode migrate
+User={{ app_username }}
+Group={{ app_usergroup }}
+
+[Install]
+WantedBy=multi-user.target

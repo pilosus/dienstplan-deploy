@@ -39,6 +39,28 @@
       tags:
         - path
 
+    - name: Create one-shot DB migration
+      template:
+        src: files/systemd_migrate.j2
+        dest: "{{ systemd_migrate_file }}"
+        owner: root
+        group: root
+        mode: "{{ app_files_chmod }}"
+        backup: yes
+      tags:
+        - systemd
+
+    - name: Create one-shot DB rollback
+      template:
+        src: files/systemd_rollback.j2
+        dest: "{{ systemd_rollback_file }}"
+        owner: root
+        group: root
+        mode: "{{ app_files_chmod }}"
+        backup: yes
+      tags:
+        - systemd
+
     - name: Create the systemd service
       template:
         src: files/systemd_service.j2
@@ -80,6 +102,14 @@
         mode: "{{ app_resources_chmod }}"
       tags:
         - copy
+
+    - name: Run DB migration
+      ansible.builtin.systemd:
+        name: "{{ systemd_migrate_name }}"
+        enabled: yes
+        state: started
+      tags:
+        - systemd
 
     - name: Enable and start the systemd service
       ansible.builtin.systemd:
