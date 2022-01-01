@@ -1,11 +1,100 @@
-# pilosus-ansible
+# dienstplan-deploy
 
-### Gather facts of certain server
+A collection of ansible playbooks for the [dienstplan slack bot](https://github.com/pilosus/dienstplan) to help:
 
-Get info about `sordes` server from `hosts` file:
+- provision a server from scratch
+- set up the bot app
+- deploy the app to the server
+
+## Install
+
+- Clone the [dienstplan](https://github.com/pilosus/dienstplan) repo, compile the `jar` as described in the documenation
+- Clone the [dienstplan-deploy](https://github.com/pilosus/dienstplan-deploy/) repo at the same directory level as with `dienstplan`:
 
 ```
-ansible sordes --module-name setup --inventory ~/.ansible/hosts --user root
+├── dienstplan
+└── dienstplan-deploy
+```
+- Checkout to a separate branch if you plan to edit configuration files
+
+```
+cd dienstplan-deploy
+git checkout -b your-branch
+```
+
+- Get `Python 3`
+- Install Python requirements:
+
+```
+cd dienstplan-deploy
+pip install -r requirements.txt
+```
+
+- Get a server (for a hobby project a DigitalOcean's Ubuntu 20.04 1 GB Memory droplet will be just fine)
+- Set up your `ssh` keys to the server
+- Set up a domain/subdomain for the app to be resolved to your server's address
+- Get a PosgreSQL 9.4+ server (again, DigitalOcean's [Managed PostgreSQL](https://www.digitalocean.com/products/managed-databases-postgresql/) is a good choice for tinkering)
+- Set up [Sentry account](https://sentry.io/)
+- Set up ansible's `hosts` file, e.g. in `~/.ansible/hosts`:
+
+```
+[digital_ocean]
+dienstplan ansible_host=YOUR-SEVER-IP-ADDRESS
+```
+
+## Usage
+
+### Encrypt / descrypt vault values
+
+See the [docs](https://docs.ansible.com/ansible/latest/user_guide/vault.html)
+
+```
+# encrypt
+ansible-vault encrypt_string --vault-password-file ~/.ansible/.dienstplan_pass.txt 'String to encrypt' --name 'variable_name'
+
+# decrypt specific variable
+ansible localhost -m ansible.builtin.debug -a var="env_slack_token" -e "@vars/env.yml" --vault-password-file ~/.ansible/.dienstplan_pass.txt
+```
+
+### Provision a server
+
+1. Update `vars/server.yml` variables, e.g. `server_domain_name`, `server_admin_email` (see above how to encrypt/decrypt a variable), `copy_local_key`
+2. Provision a server with Java, Nginx server, firewall, etc:
+
+```
+ansible-playbook --limit dienstplan playbook-server-init.yml --inventory ~/.ansible/hosts --user root --vault-password-file ~/.ansible/.dienstplan_pass.txt
+```
+
+### Initialize the app
+
+1. Update `vars/env.yml` (encrypt your app's environment variables, e.g. DB credentials, Slack tokens, etc.)
+2. Update `vars/app.yml` (**Set app_version value to the correct version of the app that you've compiled!**)
+3. Run the playbook:
+
+```
+# Run all tasks
+ansible-playbook --limit dienstplan playbook-app-init.yml --inventory ~/.ansible/hosts --user root --vault-password-file ~/.ansible/.dienstplan_pass.txt
+
+# Run tasks with selected tags
+ansible-playbook -l dienstplan playbook-app-init.yml --inventory ~/.ansible/hosts -u root --vault-password-file ~/.ansible/.dienstplan_pass.txt --tags "env"
+```
+
+### Deploy the app
+
+1. Update `var/env.yml` if needed
+2. Update `var/app.yml` (do not forget to set the correct version in `app_version`)
+3. Run the playbook:
+
+```
+ansible-playbook -l dienstplan playbook-app-deploy.yml --inventory ~/.ansible/hosts -u root --vault-password-file ~/.ansible/.dienstplan_pass.txt
+```
+
+## Gather facts about server
+
+Get info about `dienstplan` server from the `hosts` file:
+
+```
+ansible dienstplan --module-name setup --inventory ~/.ansible/hosts --user root
 ```
 
 ### Ping servers
@@ -16,45 +105,31 @@ Ping all servers of group `digital_ocean` from the `hosts` file:
 ansible digital_ocean --inventory ~/.ansible/hosts --module-name ping --user root
 ```
 
-### Run server init playbook
-
-Play scenario for server `sordes` only:
+## Debugging
 
 ```
-ansible-playbook --limit sordes playbook-server-init.yml --inventory ~/.ansible/hosts --user root
-```
+# Log in
+ssh you@your-server
 
-### Encrypt / descrypt vault values
+# Become root
+sudo -i
 
-See the [docs](https://docs.ansible.com/ansible/latest/user_guide/vault.html)
+# Check app's files
+ls -lth /opt/dienstplan/
 
-```
-# encrypt
-ansible-vault encrypt_string --vault-password-file ~/.ansible/.sordes_pass.txt 'String to encrypt' --name 'variable_name'
+# Check service unit files
+less /etc/systemd/system/dienstplan-server.service
 
-# decrypt specific variable
-ansible localhost -m ansible.builtin.debug -a var="env_slack_token" -e "@vars/env.yml" --vault-password-file ~/.ansible/.sordes_pass.txt
-```
-
-
-### Run service init playbook
-
-```
-# Run all tasks
-ansible-playbook --limit sordes playbook-app-init.yml --inventory ~/.ansible/hosts --user root --vault-password-file ~/.ansible/.sordes_pass.txt
-
-# Run tasks with selected tags
-ansible-playbook -l sordes playbook-app-init.yml --inventory ~/.ansible/hosts -u root --vault-password-file ~/.ansible/.sordes_pass.txt --tags "env"
-```
-
-
-### Debugging service
-
-```
 # See service status
-systemct status dienstplan.service
-systemct is-active dienstplan.service
+systemct status dienstplan-server.service
+systemct is-active dienstplan-server.service
 
-# See logs
-journalctl -u dienstplan.service
+# Reload systemd daemon
+systemctl daemon-reload
+
+# Restart service
+systemct restart dienstplan-server.service
+
+# See service logs
+journalctl -u dienstplan-server.service --no-pager --since today --follow
 ```
