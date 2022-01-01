@@ -11,7 +11,40 @@
     - vars/env.yml
 
   tasks:
-    - name: Create an env file for the systemd service
+    - name: Overwrite one-shot DB migration
+      template:
+        src: files/systemd_migrate.j2
+        dest: "{{ systemd_migrate_file }}"
+        owner: root
+        group: root
+        mode: "{{ app_files_chmod }}"
+        backup: yes
+      tags:
+        - systemd
+
+    - name: Overwrite one-shot DB rollback
+      template:
+        src: files/systemd_rollback.j2
+        dest: "{{ systemd_rollback_file }}"
+        owner: root
+        group: root
+        mode: "{{ app_files_chmod }}"
+        backup: yes
+      tags:
+        - systemd
+
+    - name: Overwrite the systemd service
+      template:
+        src: files/systemd_service.j2
+        dest: "{{ systemd_service_file }}"
+        owner: root
+        group: root
+        mode: "{{ app_files_chmod }}"
+        backup: yes
+      tags:
+        - systemd
+
+    - name: Overwrite an env file for the systemd service
       template:
         src: files/systemd_env.j2
         dest: "{{ systemd_service_env }}"
@@ -42,6 +75,12 @@
       tags:
         - copy
 
+    - name: Reload systemd manager configuration
+      ansible.builtin.systemd:
+        daemon_reload: yes
+      tags:
+        - systemd
+
     - name: Migrate DB
       ansible.builtin.systemd:
         name: "{{ systemd_migrate_name }}"
@@ -52,6 +91,7 @@
     - name: Restart the systemd service
       ansible.builtin.systemd:
         name: "{{ systemd_service_name }}"
+        daemon_reload: yes
         state: restarted
       tags:
         - systemd
