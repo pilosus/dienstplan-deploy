@@ -29,5 +29,5 @@ resources_local_directory: "{{ local_path }}/resources/"
 
 app_resources: resources
 # FIXME change version!
-app_version: 0.1.0
+app_version: 0.1.2
 app_file: "dienstplan-{{ app_version }}-standalone.jar"
