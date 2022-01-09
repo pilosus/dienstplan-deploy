@@ -89,6 +89,16 @@ ansible-playbook -l dienstplan playbook-app-init.yml --inventory ~/.ansible/host
 ansible-playbook -l dienstplan playbook-app-deploy.yml --inventory ~/.ansible/hosts -u root --vault-password-file ~/.ansible/.dienstplan_pass.txt
 ```
 
+Or simply pass in `app_version` as the command line option:
+
+```
+ansible-playbook --limit dienstplan playbook-app-deploy.yml \
+  --inventory ~/.ansible/hosts \
+  -u root \
+  --vault-password-file ~/.ansible/.dienstplan_pass.txt \
+  -e app_version=0.1.3
+```
+
 ## Gather facts about server
 
 Get info about `dienstplan` server from the `hosts` file:
