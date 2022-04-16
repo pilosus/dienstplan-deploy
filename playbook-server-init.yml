@@ -1,5 +1,5 @@
 #####################################################
-# Initial Server Setup: Ubuntu 20.01, Security, JVM #
+# Initial Server Setup: Ubuntu 20.04, Security, JVM #
 #####################################################
 ---
 - hosts: all

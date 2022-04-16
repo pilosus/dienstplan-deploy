@@ -96,7 +96,7 @@ ansible-playbook --limit dienstplan playbook-app-deploy.yml \
   --inventory ~/.ansible/hosts \
   -u root \
   --vault-password-file ~/.ansible/.dienstplan_pass.txt \
-  -e app_version=0.1.3
+  -e app_version=0.2.11
 ```
 
 ## Gather facts about server

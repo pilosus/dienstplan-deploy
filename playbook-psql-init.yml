@@ -1,0 +1,45 @@
+#####################################################
+# Initial Server Setup: Ubuntu 20.04, Security, JVM #
+#####################################################
+---
+- hosts: all
+  become: true
+  vars_files:
+    - vars/server.yml
+    - vars/env.yml
+
+  tasks:
+    - name: Update apt
+      apt: update_cache=yes
+      tags:
+        - packages
+
+    - name: Install required PostgreSQL packages
+      apt: name={{ psql_packages }} state=latest
+      tags:
+        - packages
+
+    - name: Enable and start the systemd service
+      ansible.builtin.systemd:
+        name: postgresql.service
+        enabled: yes
+        state: started
+      tags:
+        - systemd
+
+    - name: Create psql role and password
+      ansible.builtin.expect:
+        command: createuser -P -S -d -R -e {{ env_db_username }}
+        responses:
+          (?i)(Enter password|Enter it again|Password): "{{ env_db_password }}"
+      become: yes
+      become_user: postgres
+      tags:
+        - role
+
+    - name: Create psql db
+      ansible.builtin.raw: createdb {{ env_db_database_name }}
+      become: yes
+      become_user: postgres
+      tags:
+        - db
