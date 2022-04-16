@@ -65,6 +65,19 @@ ansible localhost -m ansible.builtin.debug -a var="env_slack_token" -e "@vars/en
 ansible-playbook --limit dienstplan playbook-server-init.yml --inventory ~/.ansible/hosts --user root --vault-password-file ~/.ansible/.dienstplan_pass.txt
 ```
 
+### (optional) Initialize a PostgreSQL database
+
+1. Make sure DB credentials are set in `vars/env.yml`
+2. Run the playbook:
+
+```
+# Run all tasks
+ansible-playbook --limit dienstplan playbook-psql-init.yml --inventory ~/.ansible/hosts --user root --vault-password-file ~/.ansible/.dienstplan_pass.txt
+
+# Run tasks with selected tags
+ansible-playbook -l dienstplan playbook-psql-init.yml --inventory ~/.ansible/hosts -u root --vault-password-file ~/.ansible/.dienstplan_pass.txt --tags "db"
+```
+
 ### Initialize the app
 
 1. Update `vars/env.yml` (encrypt your app's environment variables, e.g. DB credentials, Slack tokens, etc.)
@@ -78,6 +91,7 @@ ansible-playbook --limit dienstplan playbook-app-init.yml --inventory ~/.ansible
 # Run tasks with selected tags
 ansible-playbook -l dienstplan playbook-app-init.yml --inventory ~/.ansible/hosts -u root --vault-password-file ~/.ansible/.dienstplan_pass.txt --tags "env"
 ```
+
 
 ### Deploy the app
 
@@ -96,7 +110,7 @@ ansible-playbook --limit dienstplan playbook-app-deploy.yml \
   --inventory ~/.ansible/hosts \
   -u root \
   --vault-password-file ~/.ansible/.dienstplan_pass.txt \
-  -e app_version=0.1.3
+  -e app_version=0.2.11
 ```
 
 ## Gather facts about server
