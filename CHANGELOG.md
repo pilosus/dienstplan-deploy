@@ -6,6 +6,8 @@ file. This change log follows the conventions of
 
 ## [Unreleased]
 
+## [0.3.0] - 2023-08-03
+
 ### Added
 
 - Support for `dienstplan` scheduling worker using `systemd timers`
@@ -17,6 +19,8 @@ file. This change log follows the conventions of
 
 - Template files and respective vars naming for Jetty server changed
   for consistency
+- Bumped `ansible` version to 8.2.0
+  ([#9](https://github.com/pilosus/dienstplan-deploy/issues/9))
 
 ## [0.2.0] - 2022-04-16
 
