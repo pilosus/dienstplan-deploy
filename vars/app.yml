@@ -33,8 +33,10 @@ local_path: "../dienstplan"
 app_local_directory: "{{ local_path }}/target/uberjar/"
 resources_local_directory: "{{ local_path }}/resources/"
 
+# Override with a CLI option: -e java_system_properties="-Dlogback.configurationFile=resources/logback.json.xml -Duser.timezone=UTC"
+java_system_properties: "-Duser.timezone=UTC"
+
 app_resources: resources
-# FIXME change version!
-# or simply override with command-line option: -e app_version=1.1.89
+# Override with a CLI option: -e app_version=1.1.89
 app_version: 1.1.89
 app_file: "dienstplan-{{ app_version }}-standalone.jar"

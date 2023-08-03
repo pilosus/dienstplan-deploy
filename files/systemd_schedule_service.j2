@@ -6,7 +6,7 @@ After=network.target
 Type=oneshot
 WorkingDirectory={{ app_directory }}
 EnvironmentFile={{ systemd_service_env }}
-ExecStart=/bin/java -jar {{ app_file }} --mode schedule
+ExecStart=/bin/java {{ java_system_properties }} -jar {{ app_file }} --mode schedule
 User={{ app_username }}
 Group={{ app_usergroup }}
 
