@@ -15,8 +15,8 @@ systemd_migrate_file: /etc/systemd/system/{{ systemd_migrate_name }}
 systemd_rollback_name: dienstplan-rollback.service
 systemd_rollback_file: /etc/systemd/system/{{ systemd_rollback_name }}
 
-systemd_service_name: dienstplan-server.service
-systemd_service_file: /etc/systemd/system/{{ systemd_service_name }}
+systemd_server_name: dienstplan-server.service
+systemd_server_file: /etc/systemd/system/{{ systemd_server_name }}
 
 systemd_schedule_timer_name: dienstplan-schedule.timer
 systemd_schedule_timer_file: /etc/systemd/system/{{ systemd_schedule_timer_name }}
