@@ -18,6 +18,12 @@ systemd_rollback_file: /etc/systemd/system/{{ systemd_rollback_name }}
 systemd_service_name: dienstplan-server.service
 systemd_service_file: /etc/systemd/system/{{ systemd_service_name }}
 
+systemd_schedule_timer_name: dienstplan-schedule.timer
+systemd_schedule_timer_file: /etc/systemd/system/{{ systemd_schedule_timer_name }}
+
+systemd_schedule_service_name: dienstplan-schedule.service
+systemd_schedule_service_file: /etc/systemd/system/{{ systemd_schedule_service_name }}
+systemd_schedule_frequency: 2min
 
 nginx_config_file: /etc/nginx/sites-available/default
 nginx_config_symlink: /etc/nginx/sites-enabled/default
@@ -29,6 +35,6 @@ resources_local_directory: "{{ local_path }}/resources/"
 
 app_resources: resources
 # FIXME change version!
-# or simply override with command-line option: -e app_version=0.2.11
-app_version: 0.2.11
+# or simply override with command-line option: -e app_version=1.1.89
+app_version: 1.1.89
 app_file: "dienstplan-{{ app_version }}-standalone.jar"

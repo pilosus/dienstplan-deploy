@@ -1,0 +1,11 @@
+[Unit]
+Description=dienstplan app scheduling worker
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec={{ systemd_schedule_frequency }}
+Persistent=true
+Unit={{ systemd_schedule_service_name }}
+
+[Install]
+WantedBy=multi-user.target

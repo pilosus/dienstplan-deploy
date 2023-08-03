@@ -72,6 +72,28 @@
       tags:
         - systemd
 
+    - name: Create systemd service for scheduling worker
+      template:
+        src: files/systemd_schedule_service.j2
+        dest: "{{ systemd_schedule_service_file }}"
+        owner: root
+        group: root
+        mode: "{{ app_files_chmod }}"
+        backup: yes
+      tags:
+        - systemd
+
+    - name: Create systemd timer for scheduling worker
+      template:
+        src: files/systemd_schedule_timer.j2
+        dest: "{{ systemd_schedule_timer_file }}"
+        owner: root
+        group: root
+        mode: "{{ app_files_chmod }}"
+        backup: yes
+      tags:
+        - systemd
+
     - name: Create an env file for the systemd service
       template:
         src: files/systemd_env.j2
@@ -114,6 +136,14 @@
     - name: Enable and start the systemd service
       ansible.builtin.systemd:
         name: "{{ systemd_service_name }}"
+        enabled: yes
+        state: started
+      tags:
+        - systemd
+
+    - name: Enable and start the timer for scheduling worker
+      ansible.builtin.systemd:
+        name: "{{ systemd_schedule_timer_name }}"
         enabled: yes
         state: started
       tags:

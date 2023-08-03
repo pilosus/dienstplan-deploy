@@ -33,6 +33,28 @@
       tags:
         - systemd
 
+    - name: Overwrite scheduling worker service
+      template:
+        src: files/systemd_schedule_service.j2
+        dest: "{{ systemd_schedule_service_file }}"
+        owner: root
+        group: root
+        mode: "{{ app_files_chmod }}"
+        backup: yes
+      tags:
+        - systemd
+
+    - name: Overwrite scheduling worker timer
+      template:
+        src: files/systemd_schedule_timer.j2
+        dest: "{{ systemd_schedule_timer_file }}"
+        owner: root
+        group: root
+        mode: "{{ app_files_chmod }}"
+        backup: yes
+      tags:
+        - systemd
+
     - name: Overwrite the systemd service
       template:
         src: files/systemd_service.j2
@@ -84,6 +106,13 @@
     - name: Migrate DB
       ansible.builtin.systemd:
         name: "{{ systemd_migrate_name }}"
+        state: restarted
+      tags:
+        - systemd
+
+    - name: Restart the schedule worker timer
+      ansible.builtin.systemd:
+        name: "{{ systemd_schedule_timer_name }}"
         state: restarted
       tags:
         - systemd
