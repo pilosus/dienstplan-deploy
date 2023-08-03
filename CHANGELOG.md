@@ -13,6 +13,11 @@ file. This change log follows the conventions of
 - Support for Java system properties
   ([#10](https://github.com/pilosus/dienstplan-deploy/issues/10))
 
+### Changed
+
+- Template files and respective vars naming for Jetty server changed
+  for consistency
+
 ## [0.2.0] - 2022-04-16
 
 ### Added
