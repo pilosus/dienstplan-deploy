@@ -33,10 +33,32 @@
       tags:
         - systemd
 
+    - name: Overwrite scheduling worker service
+      template:
+        src: files/systemd_schedule_service.j2
+        dest: "{{ systemd_schedule_service_file }}"
+        owner: root
+        group: root
+        mode: "{{ app_files_chmod }}"
+        backup: yes
+      tags:
+        - systemd
+
+    - name: Overwrite scheduling worker timer
+      template:
+        src: files/systemd_schedule_timer.j2
+        dest: "{{ systemd_schedule_timer_file }}"
+        owner: root
+        group: root
+        mode: "{{ app_files_chmod }}"
+        backup: yes
+      tags:
+        - systemd
+
     - name: Overwrite the systemd service
       template:
-        src: files/systemd_service.j2
-        dest: "{{ systemd_service_file }}"
+        src: files/systemd_server.j2
+        dest: "{{ systemd_server_file }}"
         owner: root
         group: root
         mode: "{{ app_files_chmod }}"
@@ -88,9 +110,16 @@
       tags:
         - systemd
 
-    - name: Restart the systemd service
+    - name: Restart the schedule worker timer
       ansible.builtin.systemd:
-        name: "{{ systemd_service_name }}"
+        name: "{{ systemd_schedule_timer_name }}"
+        state: restarted
+      tags:
+        - systemd
+
+    - name: Restart the systemd server
+      ansible.builtin.systemd:
+        name: "{{ systemd_server_name }}"
         daemon_reload: yes
         state: restarted
       tags:

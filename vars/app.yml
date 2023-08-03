@@ -15,9 +15,15 @@ systemd_migrate_file: /etc/systemd/system/{{ systemd_migrate_name }}
 systemd_rollback_name: dienstplan-rollback.service
 systemd_rollback_file: /etc/systemd/system/{{ systemd_rollback_name }}
 
-systemd_service_name: dienstplan-server.service
-systemd_service_file: /etc/systemd/system/{{ systemd_service_name }}
+systemd_server_name: dienstplan-server.service
+systemd_server_file: /etc/systemd/system/{{ systemd_server_name }}
 
+systemd_schedule_timer_name: dienstplan-schedule.timer
+systemd_schedule_timer_file: /etc/systemd/system/{{ systemd_schedule_timer_name }}
+
+systemd_schedule_service_name: dienstplan-schedule.service
+systemd_schedule_service_file: /etc/systemd/system/{{ systemd_schedule_service_name }}
+systemd_schedule_frequency: 2min
 
 nginx_config_file: /etc/nginx/sites-available/default
 nginx_config_symlink: /etc/nginx/sites-enabled/default
@@ -27,8 +33,10 @@ local_path: "../dienstplan"
 app_local_directory: "{{ local_path }}/target/uberjar/"
 resources_local_directory: "{{ local_path }}/resources/"
 
+# Override with a CLI option: -e java_system_properties="-Dlogback.configurationFile=resources/logback.json.xml -Duser.timezone=UTC"
+java_system_properties: "-Duser.timezone=UTC"
+
 app_resources: resources
-# FIXME change version!
-# or simply override with command-line option: -e app_version=0.2.11
-app_version: 0.2.11
+# Override with a CLI option: -e app_version=1.1.89
+app_version: 1.1.89
 app_file: "dienstplan-{{ app_version }}-standalone.jar"

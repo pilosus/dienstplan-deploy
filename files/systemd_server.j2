@@ -6,7 +6,7 @@ Requires={{ systemd_migrate_name }}
 [Service]
 WorkingDirectory={{ app_directory }}
 EnvironmentFile={{ systemd_service_env }}
-ExecStart=/bin/java -jar {{ app_file }} --mode server
+ExecStart=/bin/java {{ java_system_properties }} -jar {{ app_file }} --mode server
 User={{ app_username }}
 Group={{ app_usergroup }}
 Type=simple
