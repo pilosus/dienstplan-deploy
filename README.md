@@ -30,10 +30,10 @@ cd dienstplan-deploy
 pip install -r requirements.txt
 ```
 
-- Get a server (for a hobby project a DigitalOcean's Ubuntu 20.04 1 GB Memory droplet will be just fine)
+- Get a server (for a hobby project a DigitalOcean's Ubuntu with 1 GB Memory droplet will be just fine)
 - Set up your `ssh` keys to the server
 - Set up a domain/subdomain for the app to be resolved to your server's address
-- Get a PosgreSQL 9.4+ server (again, DigitalOcean's [Managed PostgreSQL](https://www.digitalocean.com/products/managed-databases-postgresql/) is a good choice for tinkering)
+- Get a PosgreSQL 9.4+ server (or provision one with a playbook)
 - Set up [Sentry account](https://sentry.io/)
 - Set up ansible's `hosts` file, e.g. in `~/.ansible/hosts`:
 

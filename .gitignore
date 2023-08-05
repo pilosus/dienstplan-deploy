@@ -53,6 +53,8 @@ flycheck_*.el
 # network security
 /network-security.data
 
+### pyenv ###
+.python-version
 
 ### Project-specific
 TODO.md
