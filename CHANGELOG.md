@@ -6,6 +6,15 @@ file. This change log follows the conventions of
 
 ## [Unreleased]
 
+## [0.4.0] - 2024-05-25
+
+### Changed
+
+- PostgreSQL setup playbook now creates a user as `superuser` to
+  support migrations (require DDL commands).
+
+- Ansible version bumped from 8.2.0 to 9.6.0
+
 ## [0.3.0] - 2023-08-03
 
 ### Added
@@ -34,7 +43,8 @@ file. This change log follows the conventions of
 - App provisioning playbook
 - App deploy playbook
 
-[Unreleased]: https://github.com/pilosus/dienstplan/compare/0.3.0...HEAD
+[Unreleased]: https://github.com/pilosus/dienstplan/compare/0.4.0...HEAD
+[0.4.0]: https://github.com/pilosus/dienstplan/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/pilosus/dienstplan/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/pilosus/dienstplan/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/pilosus/dienstplan/compare/0.0.0...0.1.0

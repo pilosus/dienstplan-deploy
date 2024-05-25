@@ -29,7 +29,10 @@
 
     - name: Create psql role and password
       ansible.builtin.expect:
-        command: createuser -P -S -d -R -e {{ env_db_username }}
+        # Ideally, we need to have two users: a regular one for the backend,
+        # and a user with DDL permissions for migrations.
+        # For simplicity, we create a single super user here.
+        command: createuser --pwprompt --superuser --createdb --no-createrole --echo {{ env_db_username }}
         responses:
           (?i)(Enter password|Enter it again|Password): "{{ env_db_password }}"
       become: yes
